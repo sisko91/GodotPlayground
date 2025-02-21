@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://dqt6vchdgv06x"]
+
+[ext_resource type="Script" path="res://Fireball.cs" id="1_kep3g"]
+
+[sub_resource type="Gradient" id="Gradient_18tdl"]
+offsets = PackedFloat32Array(0, 0.545455, 1)
+colors = PackedColorArray(0.984314, 0, 0, 1, 1, 0.72549, 0, 1, 1, 1, 1, 0)
+metadata/_snap_enabled = true
+metadata/_snap_count = 9
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_x8exl"]
+gradient = SubResource("Gradient_18tdl")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ukflw"]
+radius = 28.1603
+
+[node name="Fireball" type="Area2D"]
+script = ExtResource("1_kep3g")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_x8exl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ukflw")
+
+[connection signal="body_entered" from="." to="." method="OnBodyEntered"]
