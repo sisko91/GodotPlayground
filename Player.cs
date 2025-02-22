@@ -48,8 +48,8 @@ public partial class Player : Area2D
 			Fireball fb = (Fireball) ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
 			fb.Position = Position;
 			fb.Velocity = lastDirection * Speed * 2;
-
-			GetParent().AddChild(fb);
+            GetNode<AudioStreamPlayer>("Fireball").Play();
+            GetParent().AddChild(fb);
 		}
 
 		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
