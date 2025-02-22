@@ -41,6 +41,7 @@ public partial class Main : Node
         if(playerInstance != null)
         {
             var startPosition = GetNode<Marker2D>("StartPosition");
+            playerInstance.HitEventHandler += GameOver;
             playerInstance.Start(startPosition.Position);
         }
 
