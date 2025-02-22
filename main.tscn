@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=4 uid="uid://dwqq1pkgdy7r2"]
+[gd_scene load_steps=8 format=4 uid="uid://dwqq1pkgdy7r2"]
 
 [ext_resource type="Script" path="res://Main.cs" id="1_la7ki"]
-[ext_resource type="PackedScene" uid="uid://diebako1kpqhl" path="res://player.tscn" id="2_2qhkb"]
 [ext_resource type="PackedScene" uid="uid://b47dxcw23btsh" path="res://mob.tscn" id="2_v1irm"]
 [ext_resource type="PackedScene" uid="uid://nmga67i5ob88" path="res://hud.tscn" id="4_bn0av"]
 [ext_resource type="AudioStream" uid="uid://btr2kd1bpl8v0" path="res://art/gameover.wav" id="5_xjmlv"]
@@ -33,8 +32,6 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0586178, 0.122216, 0.195183, 1)
 
-[node name="Player" parent="." instance=ExtResource("2_2qhkb")]
-
 [node name="MobTimer" type="Timer" parent="."]
 wait_time = 0.5
 
@@ -60,7 +57,6 @@ stream = SubResource("AudioStreamOggVorbis_0upqa")
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_xjmlv")
 
-[connection signal="Hit" from="Player" to="." method="GameOver"]
 [connection signal="timeout" from="MobTimer" to="." method="OnMobTimerTimeout"]
 [connection signal="timeout" from="ScoreTimer" to="." method="OnScoreTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="." method="OnStartTimerTimeout"]

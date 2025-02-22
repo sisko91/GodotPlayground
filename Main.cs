@@ -7,6 +7,8 @@ public partial class Main : Node
     public PackedScene MobScene { get; set; }
 
     private int _score;
+
+    private Player playerInstance;
     
 	// Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -31,9 +33,16 @@ public partial class Main : Node
     public void NewGame() {
         _score = 0;
 
-        var player = GetNode<Player>("Player");
-        var startPosition = GetNode<Marker2D>("StartPosition");
-        player.Start(startPosition.Position);
+        var playerScene = GD.Load<PackedScene>("res://Player.tscn"); // Will load when the script is instanced.
+        playerInstance = playerScene.Instantiate<Player>();
+        playerInstance.Name = "Player";
+        AddChild(playerInstance);
+
+        if(playerInstance != null)
+        {
+            var startPosition = GetNode<Marker2D>("StartPosition");
+            playerInstance.Start(startPosition.Position);
+        }
 
         GetNode<Timer>("StartTimer").Start();
 
@@ -59,14 +68,42 @@ public partial class Main : Node
         Mob mob = MobScene.Instantiate<Mob>();
 
         // Choose a random location on Path2D.
-        var mobSpawnLocation = GetNode<PathFollow2D>("MobPath/MobSpawnLocation");
-        mobSpawnLocation.ProgressRatio = GD.Randf();
+        //var mobSpawnLocation = GetNode<PathFollow2D>("MobPath/MobSpawnLocation");
+        //mobSpawnLocation.ProgressRatio = GD.Randf();
+        var viewportRect = GetNode<Hud>("HUD").GetViewport().GetVisibleRect();
+        uint side = GD.Randi() % 4;
+
+        float x = 0; float y = 0;
+
+        switch(side)
+        {
+            case 0: // Top
+                x = viewportRect.Position.X + viewportRect.Size.X * GD.Randf();
+                y = viewportRect.Position.Y;
+                break;
+            case 1: // Right
+                x = viewportRect.End.X;
+                y = viewportRect.Position.Y + viewportRect.Size.Y * GD.Randf();
+                break;
+            case 2: // Bottom
+                x = viewportRect.Position.X + viewportRect.Size.X * GD.Randf();
+                y = viewportRect.End.Y;
+                break;
+            case 3: // Left
+                x = viewportRect.End.X;
+                y = viewportRect.Position.Y + viewportRect.Size.Y * GD.Randf();
+                break;
+        }
+        mob.Position = new Vector2(x, y);
 
         // Set the mob's direction perpendicular to the path direction.
-        float direction = mobSpawnLocation.Rotation + Mathf.Pi / 2;
+        //float direction = mobSpawnLocation.Rotation + Mathf.Pi / 2;\
+        var playerPos = playerInstance.Position;
+        Vector2 normalToPlayer = (playerPos - mob.Position).Normalized();
+        float direction = normalToPlayer.Angle();
 
         // Set the mob's position to a random location.
-        mob.Position = mobSpawnLocation.Position;
+        //mob.Position = mobSpawnLocation.Position;
 
         // Add some randomness to the direction.
         direction += (float)GD.RandRange(-Mathf.Pi / 4, Mathf.Pi / 4);
