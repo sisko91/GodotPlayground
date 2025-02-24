@@ -12,6 +12,14 @@ events = [SubResource("InputEventAction_fa75b")]
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_00kgr")
 
+[node name="Curtain" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0586178, 0.122216, 0.195183, 1)
+
 [node name="ScoreLabel" type="Label" parent="."]
 anchors_preset = 5
 anchor_left = 0.5

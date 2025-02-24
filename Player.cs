@@ -80,10 +80,6 @@ public partial class Player : Area2D
         }
 
         Position += velocity * (float)delta;
-        Position = new Vector2(
-            x: Mathf.Clamp(Position.X, 0, ScreenSize.X),
-            y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y)
-        );
 
         animatedSprite2D.Rotation = 0;
         if (velocity.Y != 0)
@@ -147,10 +143,10 @@ public partial class Player : Area2D
         }
     }
 
-	private void OnBodyEntered(Node2D body) {
-		HitEventHandler?.Invoke();
+    private void OnBodyEntered(Node2D body) {
+        HitEventHandler?.Invoke();
         QueueFree();
-	}
+    }
 
     public void Start(Vector2 position) {
         Position = position;

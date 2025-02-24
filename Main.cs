@@ -71,31 +71,40 @@ public partial class Main : Node
         // Choose a random location on Path2D.
         //var mobSpawnLocation = GetNode<PathFollow2D>("MobPath/MobSpawnLocation");
         //mobSpawnLocation.ProgressRatio = GD.Randf();
-        var viewportRect = GetNode<Hud>("HUD").GetViewport().GetVisibleRect();
+        var camera = GetNode<Camera2D>("Player/Camera2D");
+        var viewportRect = camera.GetViewport().GetVisibleRect();
         uint side = GD.Randi() % 4;
 
         float x = 0; float y = 0;
 
+        // between -0.5 && 0.5
+        float randSign = GD.Randf() - 0.5f;
+
         switch(side)
         {
             case 0: // Top
-                x = viewportRect.Position.X + viewportRect.Size.X * GD.Randf();
-                y = viewportRect.Position.Y;
+                x = viewportRect.Size.X * randSign;
+                y = -viewportRect.Size.Y/2;
                 break;
             case 1: // Right
-                x = viewportRect.End.X;
-                y = viewportRect.Position.Y + viewportRect.Size.Y * GD.Randf();
+                x = viewportRect.Size.X/2;
+                y = viewportRect.Size.Y * randSign;
                 break;
             case 2: // Bottom
-                x = viewportRect.Position.X + viewportRect.Size.X * GD.Randf();
-                y = viewportRect.End.Y;
+                x = viewportRect.Size.X * randSign;
+                y = viewportRect.Size.Y/2;
                 break;
             case 3: // Left
-                x = viewportRect.End.X;
-                y = viewportRect.Position.Y + viewportRect.Size.Y * GD.Randf();
+                x = -viewportRect.Size.X/2;
+                y = viewportRect.Size.Y * randSign;
                 break;
         }
-        mob.Position = new Vector2(x, y);
+        
+        // Offset this by the camera's position so that things stay focused around the player.
+        // TODO: This will break if/when we support the screen rotating (such as the player rotating the screen with them).
+        // Get the global transform of the Camera2D
+
+        mob.Position = GetNode<Node2D>("Player").Position + new Vector2(x,y);
 
         // Set the mob's direction perpendicular to the path direction.
         //float direction = mobSpawnLocation.Rotation + Mathf.Pi / 2;\

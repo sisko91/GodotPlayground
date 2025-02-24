@@ -25,6 +25,7 @@ public partial class Hud : CanvasLayer
 
     async public void ShowGameOver() {
         ShowMessage("Game Over");
+        GetNode<ColorRect>("Curtain").Show();
 
         var messageTimer = GetNode<Timer>("MessageTimer");
         await ToSignal(messageTimer, Timer.SignalName.Timeout);
@@ -43,6 +44,7 @@ public partial class Hud : CanvasLayer
 
     private void OnStartButtonPressed() {
         GetNode<Button>("StartButton").Hide();
+        GetNode<ColorRect>("Curtain").Hide();
         EmitSignal(SignalName.StartGame);
     }
 

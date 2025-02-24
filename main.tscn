@@ -18,14 +18,6 @@ loop = true
 script = ExtResource("1_la7ki")
 MobScene = ExtResource("2_v1irm")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.0586178, 0.122216, 0.195183, 1)
-
 [node name="MobTimer" type="Timer" parent="."]
 wait_time = 0.5
 
@@ -36,7 +28,6 @@ wait_time = 2.0
 one_shot = true
 
 [node name="StartPosition" type="Marker2D" parent="."]
-position = Vector2(240, 450)
 
 [node name="HUD" parent="." instance=ExtResource("4_bn0av")]
 
