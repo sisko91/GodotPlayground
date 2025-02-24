@@ -41,7 +41,7 @@ public partial class Player : Area2D
     {
         base._Input(@event);
 
-        if(@event is InputEventJoypadButton || @event is InputEventJoypadMotion)
+        if(@event is InputEventJoypadButton)
         {
             bUsingGamepad = true;
         }
@@ -131,7 +131,7 @@ public partial class Player : Area2D
         }
         if (Input.IsActionPressed("fire"))
         {
-            if(!bUsingGamepad)
+            if (!bUsingGamepad)
             {
                 // Consider mouse position as well, and calculate the aim direction from where the mouse is relative to the player.
                 var mousePos = GetViewport().GetMousePosition();
