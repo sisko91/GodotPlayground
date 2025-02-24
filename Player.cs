@@ -4,27 +4,27 @@ using System;
 
 public partial class Player : Area2D
 {
-	public event Action HitEventHandler;
+    public event Action HitEventHandler;
 
-	[Export]
-	public int Speed { get; set; } = 400; // How fast the player will move (pixels/sec).
+    [Export]
+    public int Speed { get; set; } = 400; // How fast the player will move (pixels/sec).
 
     [Export]
     public PackedScene PrimaryWeaponTemplate { get; set; }
 
     private Weapon primaryWeapon = null;
 
-	// What direction the player last moved in. Updated each tick in HandleMove().
-	private Vector2 lastDirection = new Vector2(0, 0);
+    // What direction the player last moved in. Updated each tick in HandleMove().
+    private Vector2 lastDirection = new Vector2(0, 0);
 
-	public Vector2 ScreenSize; // Size of the game window.
+    public Vector2 ScreenSize; // Size of the game window.
 
     private bool bUsingGamepad = false;
-							   
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		ScreenSize = GetViewportRect().Size;
+                               
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
+        ScreenSize = GetViewportRect().Size;
         if(PrimaryWeaponTemplate != null)
         {
             primaryWeapon = PrimaryWeaponTemplate.Instantiate<Weapon>();
@@ -35,7 +35,7 @@ public partial class Player : Area2D
         {
             GD.PushError("No weapon assigned. Can't play.");
         }
-	}
+    }
 
     public override void _Input(InputEvent @event)
     {
@@ -49,7 +49,7 @@ public partial class Player : Area2D
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
-	{
+    {
 
         HandleMove(delta);
         HandleAim(delta);
@@ -58,8 +58,8 @@ public partial class Player : Area2D
         //Hide();
     }
 
-	private void HandleMove(double delta)
-	{
+    private void HandleMove(double delta)
+    {
         Vector2 velocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
         if (!velocity.IsZeroApprox())
@@ -135,7 +135,9 @@ public partial class Player : Area2D
             {
                 // Consider mouse position as well, and calculate the aim direction from where the mouse is relative to the player.
                 var mousePos = GetViewport().GetMousePosition();
-                primaryWeapon.Rotation = (mousePos - Position).Angle();
+                // Set the weapon's global rotation so that it accounts for rotations of the player as well.
+                // TODO: Maybe don't rotate the weapon?
+                primaryWeapon.GlobalRotation = (mousePos - Position).Angle();
             }
             var munition = primaryWeapon.TryFire();
             if(munition != null)
@@ -150,9 +152,9 @@ public partial class Player : Area2D
         QueueFree();
 	}
 
-	public void Start(Vector2 position) {
-		Position = position;
-		Show();
-		GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
-	}
+    public void Start(Vector2 position) {
+        Position = position;
+        Show();
+        GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+    }
 }
