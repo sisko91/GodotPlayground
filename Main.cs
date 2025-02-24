@@ -33,7 +33,7 @@ public partial class Main : Node
     public void NewGame() {
         _score = 0;
 
-        var playerScene = GD.Load<PackedScene>("res://Player.tscn"); // Will load when the script is instanced.
+        var playerScene = GD.Load<PackedScene>("res://player.tscn"); // Will load when the script is instanced.
         playerInstance = playerScene.Instantiate<Player>();
         playerInstance.Name = "Player";
         AddChild(playerInstance);
