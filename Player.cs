@@ -9,8 +9,10 @@ public partial class Player : Area2D
 	[Export]
 	public int Speed { get; set; } = 400; // How fast the player will move (pixels/sec).
 
-	// What direction the player is aiming in. Updated each tick by HandleAim().
-	private Vector2 aimDirection = new Vector2(0, 0);
+    [Export]
+    public PackedScene PrimaryWeaponTemplate { get; set; }
+
+    private Weapon primaryWeapon = null;
 
 	// What direction the player last moved in. Updated each tick in HandleMove().
 	private Vector2 lastDirection = new Vector2(0, 0);
@@ -23,6 +25,16 @@ public partial class Player : Area2D
 	public override void _Ready()
 	{
 		ScreenSize = GetViewportRect().Size;
+        if(PrimaryWeaponTemplate != null)
+        {
+            primaryWeapon = PrimaryWeaponTemplate.Instantiate<Weapon>();
+            // Add the weapon as a child of the player so that it has relative coordinates, orientation, etc.
+            AddChild(primaryWeapon);
+        }
+        else
+        {
+            GD.PushError("No weapon assigned. Can't play.");
+        }
 	}
 
     public override void _Input(InputEvent @event)
@@ -100,32 +112,36 @@ public partial class Player : Area2D
 
         if(!aimVector.IsZeroApprox())
         {
-            aimDirection = aimVector;
+            primaryWeapon.Rotation = aimVector.Angle();
         }
         else
         {
             // if no aim was provided we can derive an aim direction from player movement.
-            aimDirection = lastDirection;
+            primaryWeapon.Rotation = lastDirection.Angle();
         }
 
     }
 
     private void HandleFire(double delta)
     {
+        if(primaryWeapon == null)
+        {
+            GD.PushError("No weapon equipped; cannot fire.");
+            return;
+        }
         if (Input.IsActionJustPressed("fire"))
         {
-            var finalAimDir = aimDirection;
             if(!bUsingGamepad)
             {
                 // Consider mouse position as well, and calculate the aim direction from where the mouse is relative to the player.
                 var mousePos = GetViewport().GetMousePosition();
-                finalAimDir = (mousePos - Position).Normalized();
+                primaryWeapon.Rotation = (mousePos - Position).Angle();
             }
-            //Fireball fb = (Fireball)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
-            var munition = (IMunition)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
-            munition.Position = Position;
-            munition.Velocity = finalAimDir.IsZeroApprox() ? new Vector2(0, 1) : finalAimDir * Speed * 2;
-            GetParent().AddChild((Node)munition);
+            var munition = primaryWeapon.TryFire();
+            if(munition != null)
+            {
+                GetParent().AddChild((Node)munition);
+            }
         }
     }
 
