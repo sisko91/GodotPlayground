@@ -8,7 +8,11 @@ public partial class Player : Area2D
 	[Export]
 	public int Speed { get; set; } = 400; // How fast the player will move (pixels/sec).
 
-	private Vector2 lastDirection = new Vector2(0, 1);
+	// What direction the player is aiming in. Updated each tick by HandleAim().
+	private Vector2 aimDirection = new Vector2(0, 0);
+
+	// What direction the player last moved in. Updated each tick in HandleMove().
+	private Vector2 lastDirection = new Vector2(0, 0);
 
 	public Vector2 ScreenSize; // Size of the game window.
 							   
@@ -21,54 +25,87 @@ public partial class Player : Area2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-        Vector2 velocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-        if (!velocity.IsZeroApprox()) {
-			lastDirection = velocity.Normalized();
-		}
+        HandleMove(delta);
 
-		if (Input.IsActionJustPressed("fire")) {
-			Fireball fb = (Fireball) ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
-			fb.Position = Position;
-			fb.Velocity = lastDirection * Speed * 2;
+        HandleAim(delta);
+
+        // Fire!
+        if (Input.IsActionJustPressed("fire"))
+        {
+            Fireball fb = (Fireball)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
+            fb.Position = Position;
+            fb.Velocity = aimDirection.IsZeroApprox() ? new Vector2(0,1) : aimDirection * Speed * 2;
             GetNode<AudioStreamPlayer>("Fireball").Play();
             GetParent().AddChild(fb);
-		}
+        }
 
-		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        //Hide();
+    }
 
-		if (velocity.Length() > 0) {
-			velocity = velocity.Normalized() * Speed;
-			animatedSprite2D.Play();
-		} else {
-			animatedSprite2D.Stop();
-		}
+	private void HandleMove(double delta)
+	{
+        Vector2 velocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-		Position += velocity * (float)delta;
-		Position = new Vector2(
-			x: Mathf.Clamp(Position.X, 0, ScreenSize.X),
-			y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y)
-		);
+        if (!velocity.IsZeroApprox())
+        {
+            lastDirection = velocity.Normalized();
+        }
 
-		animatedSprite2D.Rotation = 0;
-		if (velocity.Y != 0) {
-			animatedSprite2D.Animation = "up";
-			//animatedSprite2D.FlipV = velocity.Y > 0;
+        var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
-			float degrees = velocity.Y > 0 ? 180 : 0;
-			if (velocity.X != 0) {
-				degrees += Math.Sign(velocity.X) * Math.Sign(velocity.Y) * -45;
-			}
+        if (velocity.Length() > 0)
+        {
+            velocity = velocity.Normalized() * Speed;
+            animatedSprite2D.Play();
+        }
+        else
+        {
+            animatedSprite2D.Stop();
+        }
 
-			animatedSprite2D.Rotation = degrees * (float)Math.PI / 180f;
-		}
-		else if (velocity.X != 0) {
-			animatedSprite2D.Animation = "walk";
-			animatedSprite2D.FlipH = velocity.X < 0;
-		}
+        Position += velocity * (float)delta;
+        Position = new Vector2(
+            x: Mathf.Clamp(Position.X, 0, ScreenSize.X),
+            y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y)
+        );
 
-		//Hide();
-	}
+        animatedSprite2D.Rotation = 0;
+        if (velocity.Y != 0)
+        {
+            animatedSprite2D.Animation = "up";
+            //animatedSprite2D.FlipV = velocity.Y > 0;
+
+            float degrees = velocity.Y > 0 ? 180 : 0;
+            if (velocity.X != 0)
+            {
+                degrees += Math.Sign(velocity.X) * Math.Sign(velocity.Y) * -45;
+            }
+
+            animatedSprite2D.Rotation = degrees * (float)Math.PI / 180f;
+        }
+        else if (velocity.X != 0)
+        {
+            animatedSprite2D.Animation = "walk";
+            animatedSprite2D.FlipH = velocity.X < 0;
+        }
+    }
+
+    private void HandleAim(double delta)
+    {
+        Vector2 aimVector = Input.GetVector("aim_left", "aim_right", "aim_up", "aim_down");
+
+        if(!aimVector.IsZeroApprox())
+        {
+            aimDirection = aimVector;
+        }
+        else
+        {
+            // if no aim was provided we can derive an aim direction from player movement.
+            aimDirection = lastDirection;
+        }
+
+    }
 
 	private void OnBodyEntered(Node2D body) {
 		Hide(); // Player disappears after being hit.
