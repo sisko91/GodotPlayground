@@ -129,7 +129,7 @@ public partial class Player : Area2D
             GD.PushError("No weapon equipped; cannot fire.");
             return;
         }
-        if (Input.IsActionJustPressed("fire"))
+        if (Input.IsActionPressed("fire"))
         {
             if(!bUsingGamepad)
             {

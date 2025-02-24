@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Transactions;
 
 // Note: We have to be in our configured namespace or Godot won't allow us to select this node type in dropdowns.
 namespace First2DGame
@@ -21,6 +22,8 @@ namespace First2DGame
 		[Export]
 		public PackedScene MunitionsTemplate { get; set; }
 
+		private double lastFireTime = -1;
+
 		// Called when the node enters the scene tree for the first time.
 		public override void _Ready()
 		{
@@ -34,7 +37,18 @@ namespace First2DGame
 		// Fires the weapon if possible at the current time. Returns the new munition instance fired if successful.
 		public IMunition TryFire()
 		{
-			if (MunitionsTemplate != null)
+            double currentTimeSeconds = Time.GetTicksMsec() / 1000.0;
+            if (lastFireTime > 0)
+			{
+				if(currentTimeSeconds - lastFireTime < FireRate)
+				{
+					// Premature fire.
+					return null;
+				}
+			}
+			lastFireTime = currentTimeSeconds;
+
+            if (MunitionsTemplate != null)
 			{
 				var rawInstance = MunitionsTemplate.Instantiate();
 				if(rawInstance == null)
