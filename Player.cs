@@ -15,6 +15,8 @@ public partial class Player : Area2D
 	private Vector2 lastDirection = new Vector2(0, 0);
 
 	public Vector2 ScreenSize; // Size of the game window.
+
+    private bool bUsingGamepad = false;
 							   
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -22,23 +24,23 @@ public partial class Player : Area2D
 		ScreenSize = GetViewportRect().Size;
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+
+        if(@event is InputEventJoypadButton || @event is InputEventJoypadMotion)
+        {
+            bUsingGamepad = true;
+        }
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
 	{
 
         HandleMove(delta);
-
         HandleAim(delta);
-
-        // Fire!
-        if (Input.IsActionJustPressed("fire"))
-        {
-            Fireball fb = (Fireball)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
-            fb.Position = Position;
-            fb.Velocity = aimDirection.IsZeroApprox() ? new Vector2(0,1) : aimDirection * Speed * 2;
-            GetNode<AudioStreamPlayer>("Fireball").Play();
-            GetParent().AddChild(fb);
-        }
+        HandleFire(delta);
 
         //Hide();
     }
@@ -105,6 +107,25 @@ public partial class Player : Area2D
             aimDirection = lastDirection;
         }
 
+    }
+
+    private void HandleFire(double delta)
+    {
+        if (Input.IsActionJustPressed("fire"))
+        {
+            var finalAimDir = aimDirection;
+            if(!bUsingGamepad)
+            {
+                // Consider mouse position as well, and calculate the aim direction from where the mouse is relative to the player.
+                var mousePos = GetViewport().GetMousePosition();
+                finalAimDir = (mousePos - Position).Normalized();
+            }
+            Fireball fb = (Fireball)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
+            fb.Position = Position;
+            fb.Velocity = finalAimDir.IsZeroApprox() ? new Vector2(0, 1) : finalAimDir * Speed * 2;
+            GetNode<AudioStreamPlayer>("Fireball").Play();
+            GetParent().AddChild(fb);
+        }
     }
 
 	private void OnBodyEntered(Node2D body) {
