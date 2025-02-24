@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dqt6vchdgv06x"]
+[gd_scene load_steps=6 format=3 uid="uid://dqt6vchdgv06x"]
 
 [ext_resource type="Script" path="res://Fireball.cs" id="1_kep3g"]
+[ext_resource type="AudioStream" uid="uid://d1ohxarlpqoac" path="res://art/fireball_whoosh.mp3" id="2_nphpt"]
 
 [sub_resource type="Gradient" id="Gradient_18tdl"]
 offsets = PackedFloat32Array(0, 0.545455, 1)
@@ -18,11 +19,15 @@ radius = 28.1603
 
 [node name="Fireball" type="Area2D"]
 script = ExtResource("1_kep3g")
+AudioTrack = NodePath("Fireball")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_x8exl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ukflw")
+
+[node name="Fireball" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_nphpt")
 
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]

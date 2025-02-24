@@ -1,3 +1,4 @@
+using First2DGame;
 using Godot;
 using System;
 
@@ -120,11 +121,11 @@ public partial class Player : Area2D
                 var mousePos = GetViewport().GetMousePosition();
                 finalAimDir = (mousePos - Position).Normalized();
             }
-            Fireball fb = (Fireball)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
-            fb.Position = Position;
-            fb.Velocity = finalAimDir.IsZeroApprox() ? new Vector2(0, 1) : finalAimDir * Speed * 2;
-            GetNode<AudioStreamPlayer>("Fireball").Play();
-            GetParent().AddChild(fb);
+            //Fireball fb = (Fireball)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
+            var munition = (IMunition)ResourceLoader.Load<PackedScene>("res://fireball.tscn").Instantiate();
+            munition.Position = Position;
+            munition.Velocity = finalAimDir.IsZeroApprox() ? new Vector2(0, 1) : finalAimDir * Speed * 2;
+            GetParent().AddChild((Node)munition);
         }
     }
 

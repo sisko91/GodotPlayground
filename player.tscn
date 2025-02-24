@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://diebako1kpqhl"]
+[gd_scene load_steps=8 format=3 uid="uid://diebako1kpqhl"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_jo0b2"]
 [ext_resource type="Texture2D" uid="uid://bq4tagwj6xdtx" path="res://art/playerGrey_up1.png" id="1_vatf5"]
 [ext_resource type="Texture2D" uid="uid://baodjlqxbuyeq" path="res://art/playerGrey_up2.png" id="2_6ros7"]
 [ext_resource type="Texture2D" uid="uid://b8epx26wgsy05" path="res://art/playerGrey_walk1.png" id="3_1ulxw"]
 [ext_resource type="Texture2D" uid="uid://c04v8bjimfpax" path="res://art/playerGrey_walk2.png" id="4_0mqmr"]
-[ext_resource type="AudioStream" uid="uid://d1ohxarlpqoac" path="res://art/fireball_whoosh.mp3" id="6_yfpco"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uykgg"]
 animations = [{
@@ -47,8 +46,5 @@ animation = &"walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_kyrfe")
-
-[node name="Fireball" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_yfpco")
 
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]
