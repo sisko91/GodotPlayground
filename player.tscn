@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Player.cs" id="1_jo0b2"]
 [ext_resource type="Texture2D" uid="uid://bq4tagwj6xdtx" path="res://art/playerGrey_up1.png" id="1_vatf5"]
 [ext_resource type="Texture2D" uid="uid://baodjlqxbuyeq" path="res://art/playerGrey_up2.png" id="2_6ros7"]
-[ext_resource type="PackedScene" uid="uid://cbly8f2qfovbt" path="res://equipment/SimpleWeaponTest.tscn" id="2_x3py3"]
+[ext_resource type="PackedScene" uid="uid://cbly8f2qfovbt" path="res://equipment/PlayerStartWeapon.tscn" id="2_x3py3"]
 [ext_resource type="Texture2D" uid="uid://b8epx26wgsy05" path="res://art/playerGrey_walk1.png" id="3_1ulxw"]
 [ext_resource type="Texture2D" uid="uid://c04v8bjimfpax" path="res://art/playerGrey_walk2.png" id="4_0mqmr"]
 
@@ -45,6 +45,8 @@ metadata/_edit_group_ = true
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_uykgg")
 animation = &"walk"
+frame = 1
+frame_progress = 0.507276
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_kyrfe")

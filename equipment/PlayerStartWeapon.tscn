@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://cbly8f2qfovbt"]
 
 [ext_resource type="Script" path="res://equipment/Weapon.cs" id="1_w402m"]
-[ext_resource type="PackedScene" uid="uid://dqt6vchdgv06x" path="res://fireball.tscn" id="2_tik0u"]
+[ext_resource type="PackedScene" uid="uid://dqt6vchdgv06x" path="res://equipment/munitions/fireball/fireball.tscn" id="2_tik0u"]
 
-[node name="SimpleWeaponTest" type="Node2D"]
+[node name="PlayerStartWeapon" type="Node2D"]
 script = ExtResource("1_w402m")
 FireRate = 0.5
 FirePower = 400.0
