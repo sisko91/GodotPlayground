@@ -130,7 +130,7 @@ public partial class Player : Area2D
             if (!bUsingGamepad)
             {
                 // Consider mouse position as well, and calculate the aim direction from where the mouse is relative to the player.
-                var mousePos = GetViewport().GetMousePosition();
+                var mousePos = GetGlobalMousePosition();
                 // Set the weapon's global rotation so that it accounts for rotations of the player as well.
                 // TODO: Maybe don't rotate the weapon?
                 primaryWeapon.GlobalRotation = (mousePos - Position).Angle();
