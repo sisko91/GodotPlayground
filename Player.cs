@@ -4,6 +4,8 @@ using System;
 
 public partial class Player : Area2D
 {
+    private static double DASH_COOLDOWN_SECONDS = 2;
+
     public event Action HitEventHandler;
 
     [Export]
@@ -20,7 +22,9 @@ public partial class Player : Area2D
     public Vector2 ScreenSize; // Size of the game window.
 
     private bool bUsingGamepad = false;
-                               
+
+    private double lastDashTime = Time.GetTicksMsec() / 1000.0 - DASH_COOLDOWN_SECONDS;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -88,7 +92,14 @@ public partial class Player : Area2D
             animatedSprite2D.Stop();
         }
 
-        Position += velocity * (float)delta;
+        double currentTimeSeconds = Time.GetTicksMsec() / 1000.0;
+        float moveMultiplier = 1;
+        if (Input.IsActionJustPressed("dash") && currentTimeSeconds - lastDashTime > DASH_COOLDOWN_SECONDS) {
+            moveMultiplier = 30;
+            lastDashTime = currentTimeSeconds;
+        }
+
+        Position += velocity * (float)delta * new Vector2(moveMultiplier, moveMultiplier);
 
         animatedSprite2D.Rotation = 0;
         if (velocity.Y != 0)
