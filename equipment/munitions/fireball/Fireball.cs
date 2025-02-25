@@ -31,6 +31,9 @@ public partial class Fireball : Area2D, IMunition
     }
 
     private void OnBodyEntered(Node2D body) {
+        //Disable physics
+        GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
+
         var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         animatedSprite2D.Play();
         animatedSprite2D.AnimationFinished += Hide;
