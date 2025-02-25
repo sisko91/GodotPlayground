@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public partial class Main : Node
 {
@@ -65,8 +66,19 @@ public partial class Main : Node
     }
 
     private void OnMobTimerTimeout() {
+        var mobs = GetTree().GetNodesInGroup("mobs").Select(x => (Mob)x).ToArray();
+        foreach (Mob m in mobs) {
+            m.UpdateVelocity(playerInstance.Position);
+        }
+
+        //Spawn limit
+        if (mobs.Length >= Mob.MOB_LIMIT) {
+            return;
+        }
+
         // Create a new instance of the Mob scene.
         Mob mob = MobScene.Instantiate<Mob>();
+        mob.AddToGroup("mobs");
 
         // Choose a random location on Path2D.
         //var mobSpawnLocation = GetNode<PathFollow2D>("MobPath/MobSpawnLocation");
@@ -99,30 +111,14 @@ public partial class Main : Node
                 y = viewportRect.Size.Y * randSign;
                 break;
         }
-        
+
         // Offset this by the camera's position so that things stay focused around the player.
         // TODO: This will break if/when we support the screen rotating (such as the player rotating the screen with them).
         // Get the global transform of the Camera2D
 
-        mob.Position = GetNode<Node2D>("Player").Position + new Vector2(x,y);
-
-        // Set the mob's direction perpendicular to the path direction.
-        //float direction = mobSpawnLocation.Rotation + Mathf.Pi / 2;\
-        var playerPos = playerInstance.Position;
-        Vector2 normalToPlayer = (playerPos - mob.Position).Normalized();
-        float direction = normalToPlayer.Angle();
-
-        // Set the mob's position to a random location.
-        //mob.Position = mobSpawnLocation.Position;
-
-        // Add some randomness to the direction.
-        direction += (float)GD.RandRange(-Mathf.Pi / 4, Mathf.Pi / 4);
-        mob.Rotation = direction;
-
-        // Choose the velocity.
-        var velocity = new Vector2((float)GD.RandRange(150.0, 250.0), 0);
-        mob.LinearVelocity = velocity.Rotated(direction);
-
+        mob.Position = GetNode<Node2D>("Player").Position + new Vector2(x, y);
+        mob.Speed = (float)GD.RandRange(150.0, 250.0);
+        mob.UpdateVelocity(playerInstance.Position);
         // Spawn the mob by adding it to the Main scene.
         AddChild(mob);
     }
