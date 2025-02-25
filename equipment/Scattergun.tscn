@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsmby5hx2b262"]
+
+[ext_resource type="Script" path="res://equipment/weapons/Scattergun.cs" id="1_82o0e"]
+[ext_resource type="PackedScene" uid="uid://dqt6vchdgv06x" path="res://equipment/munitions/fireball/fireball.tscn" id="2_m1f1f"]
+
+[node name="Scattergun" type="Node2D"]
+script = ExtResource("1_82o0e")
+FireRate = 0.7
+FirePower = 500.0
+MunitionsTemplate = ExtResource("2_m1f1f")
