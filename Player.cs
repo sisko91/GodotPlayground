@@ -50,12 +50,21 @@ public partial class Player : Area2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-
+        HandleZoom();
         HandleMove(delta);
         HandleAim(delta);
         HandleFire(delta);
 
         //Hide();
+    }
+
+    private void HandleZoom() {
+        var camera = GetNode<Camera2D>("Camera2D");
+        if (Input.IsActionJustPressed("zoom_in")) {
+            camera.Zoom = camera.Zoom * new Vector2(1.05f, 1.05f);
+        } else if (Input.IsActionJustPressed("zoom_out")) {
+            camera.Zoom = camera.Zoom * new Vector2(0.95f, 0.95f);
+        }
     }
 
     private void HandleMove(double delta)
